@@ -53,14 +53,23 @@ public with sharing class LeadTriggerHandler {
 				update acc;
             	}
                	// Create a Portal User
-				User portalUser = new User();
-				portalUser.Username = 'RaghavJindal131'; 
-				portalUser.Email = 'rjindal@salesforce.com';
-				portalUser.FirstName = 'Raghav';
-				portalUser.LastName = 'Jindal';
-				//portalUser.ContactId = lc.getContactId();
-				//portalUser.AccountId = lc.getAccountId();
-				//portalUser.ProfileId = 'Your Portal Profile Id'; // Replace with the actual Portal Profile Id
+               	list<User> portalUser = new list<User>();
+                Profile portalProfile = [select Id from Profile where Name = 'Partner Community User' limit 1];
+				User pUser = new User();
+				pUser.Username = 'rjinda12313143l@salesforce.com'; //unique
+				pUser.Email = 'rjindal@salesforce.com';
+				pUser.FirstName = 'Raghav';
+				pUser.LastName = 'Jindal';
+                pUser.ProfileId = portalProfile.Id;
+                pUser.ContactId  = '0035j00000IQwOPAA1';   //unique
+                pUser.Alias = 'test123';
+                pUser.CommunityNickname = 'test112344';    //unique
+                pUser.TimeZoneSidKey = 'America/Los_Angeles';
+    			pUser.LocaleSidKey = 'en_US';
+    			pUser.LanguageLocaleKey = 'en_US';
+                pUser.EmailEncodingKey = 'UTF-8';
+                portalUser.add(pUser);
+				
 				insert portalUser;
 
              }
