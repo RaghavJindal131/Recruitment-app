@@ -16,17 +16,23 @@ public with sharing class LeadTriggerHandler {
         try{
             //Inserting Contact Record
             list<Contact> contactObj = new list<Contact>(); 
-            for (Lead lead : [SELECT Id,Name, Email FROM Lead WHERE ID IN :idset]){
+            set<id> conidset=new set<id>();
+            for (Lead lead : [SELECT Id,Name, Email,Phone FROM Lead WHERE ID IN :idset]){
                 Contact ConObj = new Contact();
                 ConObj.Lead__c  = lead.id;
                 ConObj.LastName = lead.Name;
+                ConObj.Phone = lead.Phone;
+                ConObj.Email = lead.Email;
                 contactObj.add(ConObj);
-                //system.debug('**'+lead.ConvertedAccountId);
                }
             if(contactObj.size() > 0){
-                    insert contactObj;
-               }
-            
+               	 	Database.SaveResult[] result = Database.insert(contactObj, false);
+                	for(Database.SaveResult sr : result){
+                        system.debug('id of con' + sr.getId());
+						conidset.add(sr.getId());
+                        system.debug('conidset here ' + conidset);
+					}
+             }
             
             //Inserting Account Record
             list<Account> accountObj = new list<Account>(); 
@@ -51,19 +57,28 @@ public with sharing class LeadTriggerHandler {
                 system.debug('account record' + acc);
 				acc.IsPartner = true;
 				update acc;
+                Contact con = [SELECT id,Name,Email from Contact WHERE Id IN : conidset];
+                con.AccountId = acc.Id;
+				update con;
             	}
                	// Create a Portal User
                	list<User> portalUser = new list<User>();
                 Profile portalProfile = [select Id from Profile where Name = 'Partner Community User' limit 1];
+                Contact con = [SELECT id,Name,Email from Contact WHERE Id IN : conidset];
+                
+                
+                
 				User pUser = new User();
-				pUser.Username = 'rjinda12313143l@salesforce.com'; //unique
+				pUser.Username = con.Email; //unique
+                //pUser.Username = 'rjindakjbdbsfvl@salesforce.com'; //unique
 				pUser.Email = 'rjindal@salesforce.com';
-				pUser.FirstName = 'Raghav';
-				pUser.LastName = 'Jindal';
+				pUser.FirstName = con.Name;
+				pUser.LastName = con.Name;
                 pUser.ProfileId = portalProfile.Id;
-                pUser.ContactId  = '0035j00000IQwOPAA1';   //unique
+                pUser.ContactId  = con.Id;   //unique
+                //pUser.ContactId  = '0035j00000IQwOOAA1';   //unique
                 pUser.Alias = 'test123';
-                pUser.CommunityNickname = 'test112344';    //unique
+                pUser.CommunityNickname = con.Name;    //unique
                 pUser.TimeZoneSidKey = 'America/Los_Angeles';
     			pUser.LocaleSidKey = 'en_US';
     			pUser.LanguageLocaleKey = 'en_US';
@@ -71,6 +86,7 @@ public with sharing class LeadTriggerHandler {
                 portalUser.add(pUser);
 				
 				insert portalUser;
+            
 
              }
             
