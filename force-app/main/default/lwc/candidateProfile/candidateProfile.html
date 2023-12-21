@@ -1,0 +1,142 @@
+<template>
+    <lightning-card title="Contact Information">
+        <template if:true={contactRecord}>
+            <div class="slds-m-around_medium">
+                <div class="slds-text-heading_medium">Personal Information</div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="First Name" value={contactRecord.First_Name__c}></lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input label="Last Name" value={contactRecord.Last_Name__c}></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Email" value={contactRecord.Email__c} ></lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input label="Mobile" value={contactRecord.Mobile__c}></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Address" value={contactRecord.Address__c} onchange={handleLastNameChange}></lightning-input>
+                    </div>
+                </div>  
+            </div>
+
+            <!-- Education -->
+            <div class="slds-m-around_medium">
+                <div class="slds-text-heading_medium">Education</div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Class 10th percentage" value={contactRecord.class_10_percentage__c} onchange={handleFirstNameChange}></lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input label="Class 12th percentage" value={contactRecord.class_12_percentage__c} onchange={handleLastNameChange}></lightning-input>
+                    </div>
+                </div>
+            </div>
+             <!-- Work Experience -->
+             <div class="slds-m-around_medium">
+                <div class="slds-text-heading_medium">Work Experience</div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Company Name" value={contactRecord.Company_Name__c} onchange={handleFirstNameChange}></lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input label="Total Experience (years)" value={contactRecord.Total_Experience__c} onchange={handleLastNameChange}></lightning-input>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills -->
+             <div class="slds-m-around_medium">
+                <div class="slds-text-heading_medium">Skills</div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Skills" value={contactRecord.Skills__c} onchange={handleFirstNameChange}></lightning-input>
+                    </div>
+                </div>
+            </div>
+
+            <!-- hanlde edit -->
+            <div class="slds-m-around_medium">
+                <lightning-button label="Edit" onclick={handleEdit} variant="neutral"></lightning-button>
+            </div>
+        </template>
+        <template if:true={showModal}>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Candidate Details</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-text-heading_medium">Personal Information</div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input label="First Name" value={contactRecord.First_Name__c} onchange={handleFirstNameChange}></lightning-input>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input label="Last Name" value={contactRecord.Last_Name__c} onchange={handleLastNameChange}></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input label="Email" value={contactRecord.Email__c} onchange={handleEmailChange}></lightning-input>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input label="Mobile" value={contactRecord.Mobile__c} onchange={handleMobileChange}></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input label="Address" value={contactRecord.Address__c} onchange={handleAddressChange}></lightning-input>
+                            </div>
+                        </div>
+
+                        <div class="slds-text-heading_medium">Education</div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input label="Class 10th percentage" value={contactRecord.class_10_percentage__c} onchange={handleClass10PerChange}></lightning-input>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input label="Class 12th percentage" value={contactRecord.class_12_percentage__c} onchange={handleClass12PerChange}></lightning-input>
+                            </div>
+                        </div>
+
+                        <div class="slds-text-heading_medium">Work Experience</div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                        <lightning-input label="Company Name" value={contactRecord.Company_Name__c} onchange={handleCompanyNameChange}></lightning-input>
+                            </div>
+                            <div class="slds-col">
+                        <lightning-input label="Total Experience (years)" value={contactRecord.Total_Experience__c} onchange={handleTotalExperienceChange}></lightning-input>
+                            </div>
+                         </div>
+
+                         <div class="slds-text-heading_medium">Skills</div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Skills" value={contactRecord.Skills__c} onchange={handleSkillsChange}></lightning-input>
+                    </div>
+                </div>
+
+                       
+                      
+                      
+                        
+                        
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={handleCancel} variant="neutral"></lightning-button>
+                        <lightning-button label="Save" onclick={handleSave} variant="brand"></lightning-button>
+                    </footer>
+                </div>
+            </section>
+        </template>
+    </lightning-card>
+</template>
