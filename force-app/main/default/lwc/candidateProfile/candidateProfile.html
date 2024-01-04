@@ -138,5 +138,48 @@
                 </div>
             </section>
         </template>
+        <template if:true={contactRecord}>
+            <div class="slds-m-around_medium">
+                <div class="slds-text-heading_medium">Upload Resume</div>
+            <lightning-file-upload
+                label="Attach Resume"
+                name="fileUploader"
+                accept={acceptedFormats}
+                record-id={candidateProfileId}
+                onuploadfinished={handleUploadFinished}
+                multiple
+            >
+            </lightning-file-upload>
+        </div>
+        </template>
+
+        <!-- Generate Resume  -->
+        <template if:true={contactRecord}>
+            <div class="slds-m-around_medium">
+                <div class="slds-text-heading_medium">Generate Resume</div>
+              <lightning-button label="Generate PDF" onclick={handlePDFGenerateClick}></lightning-button>
+        </div>
+        </template>
+
+        <!-- File Preview -->
+        <template for:each={filesList} for:item="file">
+            <div key={file.value} class="slds-box">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                      <p><strong>FileName - </strong>{file.label}</p>
+                    </div>
+                    <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                      <a href={file.url} download>Download</a>
+                    </div>
+                    <!-- <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                      <lightning-button label="Preview" 
+                      variant="brand"
+                     data-id={file.value}
+                     onclick={previewHandler}
+                      ></lightning-button>
+                    </div> -->
+                  </div>
+            </div>
+        </template>
     </lightning-card>
 </template>

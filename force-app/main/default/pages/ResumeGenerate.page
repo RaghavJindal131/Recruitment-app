@@ -1,0 +1,78 @@
+<apex:page standardController="Candidate_Profile__c"  renderAs="pdf">
+    <!-- <apex:outputText value="{!CandidateProfile.Name__c}" /> -->
+    <table style="font-family:sans-serif; padding-bottom:30px;">
+        <tr>
+            <td><apex:image id="logo2" value="{!$Resource.resume_logo}" width="90" height="90"/></td>
+            <td style="font:24pt; padding-left:10px; padding-right:250px;"><apex:outputText value="{!Candidate_Profile__c.First_Name__c}"/> <apex:outputText value="{!Candidate_Profile__c.Last_Name__c}"/></td>
+            <td style="font:24pt;">Resume</td>
+        </tr>
+        </table>
+
+        <table style="border:0.5px solid #fff; font-family:sans-serif;">
+            <tr>
+                <td style="padding-right:450px;"><apex:outputField value="{!Candidate_Profile__c.Address__c}"/></td>
+                <td style="test-align:right; padding-right:20px;">Date</td> 
+                <td style="text-align:right;"><apex:outputText value="{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}"/></td> 
+            </tr>
+            <tr>
+                <td><apex:outputField value="{!Candidate_Profile__c.Email__c}"/></td>
+            </tr>
+              
+            </table>
+            <br></br>
+
+
+
+
+            <table style="border:0.5px solid #fff; font-family:sans-serif;">
+                <tr style="color:#fff; background-color:#ff4500;">
+                    <th style="padding-left:5px; padding-right:170px;">Personal Information </th>
+                    <th style="background-color:#fff;">BLANK COL</th>
+                    <th style="padding-left:5px; padding-right:170px;">Education</th>    
+                </tr>
+                <tr>
+                    <td style="padding-left:5px;">First Name : <apex:outputText value="{!Candidate_Profile__c.First_Name__c}"/></td>
+                    <td></td>
+                    <td style="padding-left:5px;">Class 10th percentage : <apex:outputText value="{!Candidate_Profile__c.class_10_percentage__c}"/></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px;">Last Name : <apex:outputText value="{!Candidate_Profile__c.Last_Name__c}"/></td>
+                    <td></td>
+                    <td style="padding-left:5px;">Class 12th percentage : <apex:outputText value="{!Candidate_Profile__c.class_12_percentage__c}"/></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px;">Email : <apex:outputText value="{!Candidate_Profile__c.Email__c}"/></td>
+                    <td></td>
+                    
+                </tr>
+                <tr>
+                    <td style="padding-left:5px;">Mobile : <apex:outputText value="{!Candidate_Profile__c.Mobile__c}"/></td>
+                    <td></td>
+                </tr>
+                
+                </table>
+                <br></br>
+
+                <table style="border:0.5px solid #fff; font-family:sans-serif;">
+                    <tr style="color:#fff; background-color:#ff4500;">
+                        <th style="padding-left:5px; padding-right:170px;">Work Experience </th>
+                        <th style="background-color:#fff;">BLANK COL</th>
+                        <th style="padding-left:5px; padding-right:170px;">Skills</th>    
+                    </tr>
+                    <tr>
+                        <td style="padding-left:5px;">Company Name : <apex:outputText value="{!Candidate_Profile__c.Company_Name__c}"/></td>
+                        <td></td>
+                        <td style="padding-left:5px;">Apex </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:5px;">Total Experience (years) : <apex:outputText value="{!Candidate_Profile__c.Total_Experience__c}"/></td>
+                        <td></td>
+                        <td style="padding-left:5px;">LWC</td>
+                    </tr>
+                    
+                    </table>
+                  
+
+
+
+</apex:page>

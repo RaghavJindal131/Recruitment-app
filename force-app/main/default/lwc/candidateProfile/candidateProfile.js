@@ -1,12 +1,17 @@
 import { LightningElement,track,api,wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord } from 'lightning/uiRecordApi';
+import {NavigationMixin} from 'lightning/navigation'
 import getContactById from '@salesforce/apex/ProfileController.getContactById';
 import updateContact from '@salesforce/apex/ProfileController.updateContact';
 import getLoggedInUserId from '@salesforce/apex/ProfileController.getLoggedInUserId';
 import getCandidateProfileId from '@salesforce/apex/ProfileController.getCandidateProfileId';
+import savePDFAttachmentController from '@salesforce/apex/ProfileController.savePDFAttachmentController';
+import getRelatedFilesByRecordId from '@salesforce/apex/ProfileController.getRelatedFilesByRecordId';
+import { loadScript } from 'lightning/platformResourceLoader';
+import JS_PDF from '@salesforce/resourceUrl/jsPDF';
 
-export default class CandidateProfile extends LightningElement {
+export default class CandidateProfile extends NavigationMixin(LightningElement)  {
 
     @api recordId;
     @track contactRecord;
@@ -184,5 +189,145 @@ export default class CandidateProfile extends LightningElement {
         // Reset any changes made
         this.showModal = false;
     }
+
+
+    //week 4
+    get acceptedFormats() {
+        return ['.pdf', '.png'];
+    }
+
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        alert('No. of files uploaded : ' + uploadedFiles.length);
+    }
+
+    //getRelatedFiles preview
+    filesList =[]
+    @wire(getRelatedFilesByRecordId, {recordId: '$candidateProfileId'})
+    wiredResult({data, error}){ 
+        if(data){ 
+            console.log(data)
+            this.filesList = Object.keys(data).map(item=>({"label":data[item],
+             "value": item,
+             "url":`/sfc/servlet.shepherd/document/download/${item}`
+            }))
+            console.log(this.filesList)
+        }
+        if(error){ 
+            console.log(error)
+        }
+    }
+    previewHandler(event){
+        console.log(event.target.dataset.id)
+        console.log('preview handler called');
+        this[NavigationMixin.Navigate]({ 
+            type:'standard__namedPage',
+            attributes: {
+                url: 'https://d5j000006o76feas-dev-ed.my.salesforce.com/sfc/p/5j000006O76F/a/5j000000jBcX/5f0JdWw3ynbxfJKNTBzuZ5UGqnBlP.jgGFtz6yg8fEo'
+
+            }
+            
+        })
+    }
+    renderedCallback() {
+		if (!this.jsPDFInitialized) {
+			this.jsPDFInitialized = true;
+			loadScript(this, JS_PDF)
+				.then(() => {
+					console.log('jsPDF library loaded successfully');
+				})
+				.catch((error) => {
+					console.error('Error loading jsPDF library', error);
+				});
+		}
+	}
+
+
+
+    handlePDFGenerateClick(){
+        console.log('generate PDF method called');
+        if (this.jsPDFInitialized) {
+			// Make sure to correctly reference the loaded jsPDF library.
+            const vfPageUrl = '/apex/ResumeGenerate';
+            const pdfContentPromise = this.fetchVisualforcePageContent(vfPageUrl);
+
+            pdfContentPromise.then((pdfContent) => {
+                console.log('pdf Content - ' + pdfContent);
+                // Save the generated PDF as an attachment to the Candidate Profile record
+                this.savePDFAttachment(pdfContent);
+            }).catch(error => {
+                console.error('Error generating PDF content:', error);
+            });
+
+
+			// const doc = new window.jspdf.jsPDF();
+			// // Add content to the PDF.
+			// doc.text('Hello PDF!', 10, 10);
+			// // Save the PDF.
+			// doc.save('generated_pdf.pdf');
+		} else {
+			console.error('jsPDF library not initialized');
+		}
+    }
+
+    fetchVisualforcePageContent(url) {
+        console.log('fetching VF page content');
+        return new Promise((resolve, reject) => {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        reject(`Error fetching Visualforce page content. HTTP status ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(content => {
+                    resolve(content);
+                })
+                .catch(error => {
+                    reject(`Error fetching Visualforce page content: ${error.message}`);
+                });
+        });
+    }
+
+    savePDFAttachment(pdfContent) {
+        // Use lightning-record-edit-form to save the generated PDF as an attachment
+        console.log('saving the PDF as attachment');
+        const parentId = 'a0F5j00000dlXWLEA2'; // Replace with the actual Candidate Profile record Id
+     
+
+        savePDFAttachmentController({ pdfContent, parentId })
+        .then(() => {
+            // Success - Display a toast
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: 'PDF attached successfully!',
+                    variant: 'success'
+                })
+            );
+        })
+        .catch(error => {
+            // Error - Display an error toast
+            console.error('Error attaching PDF:', error.body.message);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Error attaching PDF: ' + error.body.message,
+                    variant: 'error'
+                })
+            );
+        });
+
+
+        
+
+
+
+
+    }
+
+       
+
+
 
 }

@@ -52,5 +52,51 @@ public with sharing class ProfileController {
             return candidateProfiles[0].Id;
         }
         return null;
-}
+    }
+    //week 4
+    @AuraEnabled(cacheable=true)
+    public static Map<ID, String> getRelatedFilesByRecordId(String recordId) {
+             
+        List<ContentDocumentLink> files = [SELECT id, ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
+        List<ID> fileIDs = new List<ID>();
+        for (ContentDocumentLink docLink : files) {
+            fileIDs.add(docLink.ContentDocumentId);
+        }
+ 
+        List<ContentVersion> docs = [SELECT ContentDocumentId, FileExtension, Title 
+            FROM ContentVersion WHERE ContentDocumentId IN : fileIDs];
+          
+        Map<ID, String> mapIdTitle = new Map<ID, String>();
+        for (ContentVersion docLink : docs) {
+            mapIdTitle.put(docLink.ContentDocumentId, docLink.Title);
+        }
+        return mapIdTitle;
+    }
+
+
+    //saving the PDF to attached record
+    @AuraEnabled
+    public static void savePDFAttachmentController(String pdfContent, Id parentId) {
+        //Blob decodedBlob = EncodingUtil.base64Decode(pdfContent);
+        Blob formatJson = EncodingUtil.base64Decode(JSON.serializePretty(pdfContent));
+        // Create a ContentVersion
+        ContentVersion cv = new ContentVersion(
+            VersionData = formatJson,
+            Title = 'Generated Resume',
+            FirstPublishLocationId = parentId
+        );
+
+        // Insert the ContentVersion record
+        insert cv;
+
+        // Create a ContentDocumentLink
+        ContentDocumentLink cdl = new ContentDocumentLink(
+            ContentDocumentId = [SELECT Id FROM ContentVersion WHERE Id = :cv.Id LIMIT 1].ContentDocumentId,
+            LinkedEntityId = parentId,
+            ShareType = 'I'
+        );
+
+        // Insert the ContentDocumentLink record
+        insert cdl;
+    }
 }
