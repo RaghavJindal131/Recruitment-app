@@ -6,6 +6,13 @@ public with sharing class ProfileController {
         return [SELECT Id, First_Name__c,Last_Name__c,Address__c, class_10_percentage__c, class_12_percentage__c, Company_Name__c, Email__c, Mobile__c, Skills__c, Total_Experience__c  FROM Candidate_Profile__c WHERE Id = :contactId LIMIT 1];
     }
 
+    @AuraEnabled(cacheable=true)
+    public static Percentage__c getpercentrecord(Id candidateid) {
+        system.debug('record id'+candidateid);
+        //Candidate_Profile__c cp = [SELECT Id, First_Name__c,Last_Name__c FROM Candidate_Profile__c WHERE Id = :contactId LIMIT 1];
+        return [SELECT Id,Name,percent_value__c  FROM Percentage__c WHERE Id = :candidateid LIMIT 1];
+    }
+
     @AuraEnabled
     public static void updateContact(String updatedCustomObject) {
         try {

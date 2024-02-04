@@ -1,0 +1,83 @@
+<!-- Lightning Web Component (jobSearch.html) -->
+
+<template>
+    <lightning-card title="Job Search" class="slds-p-around_medium">
+        <lightning-layout>
+            <!-- First Column -->
+            <lightning-layout-item class="slds-p-around_medium">
+                <lightning-input label="Location" value={locationFilter} onchange={handleLocationChange}></lightning-input>
+            </lightning-layout-item>
+
+            <lightning-layout-item class="slds-p-around_medium">
+                <lightning-dual-listbox
+                label="Industry"
+                value={industryFilter}
+                options={industryOptions}
+                placeholder="Select Industries"
+                onchange={handleIndustryChange}>
+                </lightning-dual-listbox>
+            </lightning-layout-item>
+
+
+
+            <!-- Second Column -->
+            <lightning-layout-item class="slds-p-around_medium">
+                <lightning-combobox
+                    label="Job Type"
+                    value={jobTypeFilter}
+                    options={jobTypeOptions}
+                    onchange={handleJobTypeChange}>
+                </lightning-combobox>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- Button Row -->
+        <lightning-layout>
+            <lightning-layout-item size="12">
+                <div class="slds-text-align_center slds-m-top_medium">
+                    <lightning-button label="Search Jobs" variant="brand" onclick={searchJobs}></lightning-button>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- Display Jobs Table or Message -->
+        <template if:true={jobList} if:false={jobList.length}>
+            <lightning-layout class="slds-m-top_medium">
+                <lightning-layout-item>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Job Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Industry</th>
+                                <th scope="col">Job Type</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={jobList} for:item="job">
+                                <tr key={job.Id}>
+                                    <td>{job.Name}</td>
+                                    <td>{job.Job_Description__c}</td>
+                                    <td>{job.Location__c}</td>
+                                    <td>{job.Industry__c}</td>
+                                    <td>{job.Job_Type__c}</td>
+                                    <td>
+                                        <lightning-button label="View More" variant="brand" onclick={handleViewMore} data-id={job.Id}></lightning-button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+
+        <template if:false={jobList.length}>
+            <div class="slds-text-align_center slds-m-top_medium">
+                <p>No matching jobs found.</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>
